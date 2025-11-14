@@ -1,0 +1,22 @@
+{
+  "baseURL": "https://nibysukces.github.io/nibysukces-extensions-0.8",
+  "sources": [
+    {
+      "id": "ManhwaRead",
+      "name": "ManhwaRead",
+      "description": "Extension that pulls manhwa from https://manhwaread.com",
+      "author": "Nibysukces",
+      "contentRating": "ADULT",
+      "icon": "icon.png",
+      "websiteBaseURL": "https://manhwaread.com",
+      "version": "1.0.0",
+      "intents": ["MANGA_CHAPTERS", "HOMEPAGE_SECTIONS"],
+      "sourceTags": [
+        {
+          "text": "18+",
+          "type": "warning"
+        }
+      ]
+    }
+  ]
+}
