@@ -15030,7 +15030,7 @@ var _Sources = (() => {
         const imageUrl = $elem.find(".manga-item__img-inner").attr("src") || "";
         const rating = $elem.find(".manga-item__rating span.text-sm").text().trim();
         const status = $elem.find(".manga-status__label").text().trim();
-        const subtitle = rating ? `\u2B50 ${rating} \u2022 ${status}` : status;
+        const subtitle = rating ? `${rating} \u2022 ${status}` : status;
         items.push(
           App.createPartialSourceManga({
             mangaId,
@@ -15064,7 +15064,7 @@ var _Sources = (() => {
           const imageUrl = $elem.find(".manga-item__img-inner").attr("src") || "";
           const rating = $elem.find(".manga-item__rating span.text-sm").text().trim();
           const status = $elem.find(".manga-status__label").text().trim();
-          const subtitle = rating ? `\u2B50 ${rating} \u2022 ${status}` : status;
+          const subtitle = rating ? `${rating} \u2022 ${status}` : status;
           if (popularItems.length < 20) {
             popularItems.push(
               App.createPartialSourceManga({
@@ -15098,7 +15098,7 @@ var _Sources = (() => {
           const imageUrl = $elem.find(".manga-item__img-inner").attr("src") || "";
           const rating = $elem.find(".manga-item__rating span.text-sm").text().trim();
           const status = $elem.find(".manga-status__label").text().trim();
-          const subtitle = rating ? `\u2B50 ${rating} \u2022 ${status}` : status;
+          const subtitle = rating ? `${rating} \u2022 ${status}` : status;
           if (newItems.length < 20) {
             newItems.push(
               App.createPartialSourceManga({
@@ -15132,7 +15132,7 @@ var _Sources = (() => {
           const imageUrl = $elem.find(".manga-item__img-inner").attr("src") || "";
           const rating = $elem.find(".manga-item__rating span.text-sm").text().trim();
           const status = $elem.find(".manga-status__label").text().trim();
-          const subtitle = rating ? `\u2B50 ${rating} \u2022 ${status}` : status;
+          const subtitle = rating ? `${rating} \u2022 ${status}` : status;
           if (latestItems.length < 20) {
             latestItems.push(
               App.createPartialSourceManga({
@@ -15183,7 +15183,7 @@ var _Sources = (() => {
         const imageUrl = $elem.find(".manga-item__img-inner").attr("src") || "";
         const rating = $elem.find(".manga-item__rating span.text-sm").text().trim();
         const status = $elem.find(".manga-status__label").text().trim();
-        const subtitle = rating ? `\u2B50 ${rating} \u2022 ${status}` : status;
+        const subtitle = rating ? `${rating} \u2022 ${status}` : status;
         newCollectedIds.push(mangaId);
         items.push(
           App.createPartialSourceManga({
