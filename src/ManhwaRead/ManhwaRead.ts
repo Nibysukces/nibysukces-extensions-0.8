@@ -200,7 +200,7 @@ export class ManhwaRead implements ChapterProviding, HomePageSectionsProviding, 
 
             const rating = $elem.find(".manga-item__rating span.text-sm").text().trim();
             const status = $elem.find(".manga-status__label").text().trim();
-            const subtitle = rating ? `⭐ ${rating} • ${status}` : status;
+            const subtitle = rating ? `${rating} • ${status}` : status;
 
             items.push(
                 App.createPartialSourceManga({
@@ -243,7 +243,7 @@ export class ManhwaRead implements ChapterProviding, HomePageSectionsProviding, 
                 const imageUrl = $elem.find(".manga-item__img-inner").attr("src") || "";
                 const rating = $elem.find(".manga-item__rating span.text-sm").text().trim();
                 const status = $elem.find(".manga-status__label").text().trim();
-                const subtitle = rating ? `⭐ ${rating} • ${status}` : status;
+                const subtitle = rating ? `${rating} • ${status}` : status;
 
                 if (popularItems.length < 20) {
                     popularItems.push(
@@ -285,7 +285,7 @@ export class ManhwaRead implements ChapterProviding, HomePageSectionsProviding, 
                 const imageUrl = $elem.find(".manga-item__img-inner").attr("src") || "";
                 const rating = $elem.find(".manga-item__rating span.text-sm").text().trim();
                 const status = $elem.find(".manga-status__label").text().trim();
-                const subtitle = rating ? `⭐ ${rating} • ${status}` : status;
+                const subtitle = rating ? `${rating} • ${status}` : status;
 
                 if (newItems.length < 20) {
                     newItems.push(
@@ -329,7 +329,7 @@ export class ManhwaRead implements ChapterProviding, HomePageSectionsProviding, 
                 const imageUrl = $elem.find(".manga-item__img-inner").attr("src") || "";
                 const rating = $elem.find(".manga-item__rating span.text-sm").text().trim();
                 const status = $elem.find(".manga-status__label").text().trim();
-                const subtitle = rating ? `⭐ ${rating} • ${status}` : status;
+                const subtitle = rating ? `${rating} • ${status}` : status;
 
                 if (latestItems.length < 20) {
                     latestItems.push(
@@ -390,7 +390,7 @@ export class ManhwaRead implements ChapterProviding, HomePageSectionsProviding, 
             const imageUrl = $elem.find(".manga-item__img-inner").attr("src") || "";
             const rating = $elem.find(".manga-item__rating span.text-sm").text().trim();
             const status = $elem.find(".manga-status__label").text().trim();
-            const subtitle = rating ? `⭐ ${rating} • ${status}` : status;
+            const subtitle = rating ? `${rating} • ${status}` : status;
 
             newCollectedIds.push(mangaId);
             items.push(
