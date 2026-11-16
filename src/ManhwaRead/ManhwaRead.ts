@@ -25,7 +25,7 @@ import * as cheerio from "cheerio";
 const DOMAIN = "https://manhwaread.com";
 
 export const ManhwaReadInfo: SourceInfo = {
-    version: "1.0.1",
+    version: "1.0.2",
     name: "ManhwaRead",
     description: `Extension that pulls manga from ${DOMAIN}`,
     author: "Nibysukces",
@@ -626,6 +626,19 @@ export class ManhwaRead
             }),
         });
     }
+    // The installed Paperback build calls this older, synchronous name when the
+    // cloud icon is tapped; newer builds call getCloudflareBypassRequestAsync.
+    // The bypass web view uses its own user agent, so none is set here.
+    getCloudflareBypassRequest(): Request {
+        return App.createRequest({
+            url: `${DOMAIN}/`,
+            method: "GET",
+            headers: {
+                referer: `${DOMAIN}/`,
+            },
+        });
+    }
+
     async getCloudflareBypassRequestAsync(): Promise<Request> {
         return App.createRequest({
             url: `${DOMAIN}/`,
