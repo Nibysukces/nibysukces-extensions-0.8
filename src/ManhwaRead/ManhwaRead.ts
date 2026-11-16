@@ -17,6 +17,7 @@ import {
     TagSection,
     PartialSourceManga,
     BadgeColor,
+    CloudflareBypassRequestProviding,
 } from "@paperback/types";
 
 import * as cheerio from "cheerio";
@@ -24,14 +25,14 @@ import * as cheerio from "cheerio";
 const DOMAIN = "https://manhwaread.com";
 
 export const ManhwaReadInfo: SourceInfo = {
-    version: "1.0.0",
+    version: "1.0.1",
     name: "ManhwaRead",
     description: `Extension that pulls manga from ${DOMAIN}`,
     author: "Nibysukces",
     icon: "icon.png",
     contentRating: ContentRating.ADULT,
     websiteBaseURL: DOMAIN,
-    intents: SourceIntents.MANGA_CHAPTERS | SourceIntents.HOMEPAGE_SECTIONS,
+    intents: SourceIntents.MANGA_CHAPTERS | SourceIntents.HOMEPAGE_SECTIONS | SourceIntents.CLOUDFLARE_BYPASS_REQUIRED,
     sourceTags: [
         {
             text: "18+",
@@ -69,7 +70,14 @@ function base64Decode(base64: string): string {
     return output;
 }
 
-export class ManhwaRead implements ChapterProviding, HomePageSectionsProviding, MangaProviding, SearchResultsProviding {
+export class ManhwaRead
+    implements
+        ChapterProviding,
+        HomePageSectionsProviding,
+        MangaProviding,
+        SearchResultsProviding,
+        CloudflareBypassRequestProviding
+{
     requestManager = App.createRequestManager({
         requestsPerSecond: 5,
         requestTimeout: 10000,
@@ -114,6 +122,7 @@ export class ManhwaRead implements ChapterProviding, HomePageSectionsProviding, 
             });
 
             const response = await this.requestManager.schedule(request, 1);
+            this.checkResponseError(response);
             const $ = cheerio.load(response.data as string);
 
             const items: PartialSourceManga[] = [];
@@ -169,6 +178,7 @@ export class ManhwaRead implements ChapterProviding, HomePageSectionsProviding, 
         });
 
         const response = await this.requestManager.schedule(request, 1);
+        this.checkResponseError(response);
 
         let htmlContent = "";
         try {
@@ -224,6 +234,7 @@ export class ManhwaRead implements ChapterProviding, HomePageSectionsProviding, 
         });
 
         const response = await this.requestManager.schedule(request, 1);
+        this.checkResponseError(response);
         const $ = cheerio.load(response.data as string);
 
         const popularSection = $('span.text-secondary:contains("Popular")').closest("section");
@@ -373,6 +384,7 @@ export class ManhwaRead implements ChapterProviding, HomePageSectionsProviding, 
         });
 
         const response = await this.requestManager.schedule(request, 1);
+        this.checkResponseError(response);
         const $ = cheerio.load(response.data as string);
 
         const items: PartialSourceManga[] = [];
@@ -427,6 +439,7 @@ export class ManhwaRead implements ChapterProviding, HomePageSectionsProviding, 
         });
 
         const response = await this.requestManager.schedule(request, 1);
+        this.checkResponseError(response);
         const $ = cheerio.load(response.data as string);
 
         const chapters: Chapter[] = [];
@@ -491,6 +504,7 @@ export class ManhwaRead implements ChapterProviding, HomePageSectionsProviding, 
         });
 
         const response = await this.requestManager.schedule(request, 1);
+        this.checkResponseError(response);
         const $ = cheerio.load(response.data as string);
 
         const pages: string[] = [];
@@ -528,6 +542,7 @@ export class ManhwaRead implements ChapterProviding, HomePageSectionsProviding, 
         });
 
         const response = await this.requestManager.schedule(request, 1);
+        this.checkResponseError(response);
         const $ = cheerio.load(response.data as string);
 
         const title = $(".manga-titles h1").text().trim();
@@ -611,6 +626,27 @@ export class ManhwaRead implements ChapterProviding, HomePageSectionsProviding, 
             }),
         });
     }
+    async getCloudflareBypassRequestAsync(): Promise<Request> {
+        return App.createRequest({
+            url: `${DOMAIN}/`,
+            method: "GET",
+            headers: {
+                referer: `${DOMAIN}/`,
+                "user-agent": await this.requestManager.getDefaultUserAgent(),
+            },
+        });
+    }
+
+    // manhwaread.com answers with a 403 Cloudflare challenge page until the
+    // user has passed the challenge in the app's Cloudflare bypass web view.
+    checkResponseError(response: Response): void {
+        if (response.status === 403 || response.status === 503) {
+            throw new Error(
+                `CLOUDFLARE BYPASS ERROR:\nPlease go to the homepage of <${ManhwaReadInfo.name}> and press the cloud icon.`
+            );
+        }
+    }
+
     getMangaShareUrl(mangaId: string): string {
         return `${DOMAIN}/manhwa/${mangaId}`;
     }
