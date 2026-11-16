@@ -14888,7 +14888,7 @@ var _Sources = (() => {
   // src/ManhwaRead/ManhwaRead.ts
   var DOMAIN = "https://manhwaread.com";
   var ManhwaReadInfo = {
-    version: "1.0.1",
+    version: "1.0.2",
     name: "ManhwaRead",
     description: `Extension that pulls manga from ${DOMAIN}`,
     author: "Nibysukces",
@@ -15363,6 +15363,18 @@ var _Sources = (() => {
           artist,
           hentai: false
         })
+      });
+    }
+    // The installed Paperback build calls this older, synchronous name when the
+    // cloud icon is tapped; newer builds call getCloudflareBypassRequestAsync.
+    // The bypass web view uses its own user agent, so none is set here.
+    getCloudflareBypassRequest() {
+      return App.createRequest({
+        url: `${DOMAIN}/`,
+        method: "GET",
+        headers: {
+          referer: `${DOMAIN}/`
+        }
       });
     }
     async getCloudflareBypassRequestAsync() {
