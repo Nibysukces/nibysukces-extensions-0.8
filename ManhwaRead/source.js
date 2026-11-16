@@ -14888,14 +14888,14 @@ var _Sources = (() => {
   // src/ManhwaRead/ManhwaRead.ts
   var DOMAIN = "https://manhwaread.com";
   var ManhwaReadInfo = {
-    version: "1.0.0",
+    version: "1.0.1",
     name: "ManhwaRead",
     description: `Extension that pulls manga from ${DOMAIN}`,
     author: "Nibysukces",
     icon: "icon.png",
     contentRating: import_types2.ContentRating.ADULT,
     websiteBaseURL: DOMAIN,
-    intents: import_types2.SourceIntents.MANGA_CHAPTERS | import_types2.SourceIntents.HOMEPAGE_SECTIONS,
+    intents: import_types2.SourceIntents.MANGA_CHAPTERS | import_types2.SourceIntents.HOMEPAGE_SECTIONS | import_types2.SourceIntents.CLOUDFLARE_BYPASS_REQUIRED,
     sourceTags: [
       {
         text: "18+",
@@ -14963,6 +14963,7 @@ var _Sources = (() => {
           method: "GET"
         });
         const response2 = await this.requestManager.schedule(request2, 1);
+        this.checkResponseError(response2);
         const $3 = load(response2.data);
         const items2 = [];
         const popularSection = $3('span.text-secondary:contains("Popular")').closest("section");
@@ -15006,6 +15007,7 @@ var _Sources = (() => {
         data: `action=quick_search&keyword=${encodeURIComponent(query.title)}`
       });
       const response = await this.requestManager.schedule(request, 1);
+      this.checkResponseError(response);
       let htmlContent = "";
       try {
         const jsonData = JSON.parse(response.data);
@@ -15051,6 +15053,7 @@ var _Sources = (() => {
         method: "GET"
       });
       const response = await this.requestManager.schedule(request, 1);
+      this.checkResponseError(response);
       const $2 = load(response.data);
       const popularSection = $2('span.text-secondary:contains("Popular")').closest("section");
       if (popularSection.length > 0) {
@@ -15171,6 +15174,7 @@ var _Sources = (() => {
         method: "GET"
       });
       const response = await this.requestManager.schedule(request, 1);
+      this.checkResponseError(response);
       const $2 = load(response.data);
       const items = [];
       const newCollectedIds = [...collectedIds];
@@ -15212,6 +15216,7 @@ var _Sources = (() => {
         method: "GET"
       });
       const response = await this.requestManager.schedule(request, 1);
+      this.checkResponseError(response);
       const $2 = load(response.data);
       const chapters = [];
       $2(".chapters-list .chapter-item").each((_, element) => {
@@ -15260,6 +15265,7 @@ var _Sources = (() => {
         method: "GET"
       });
       const response = await this.requestManager.schedule(request, 1);
+      this.checkResponseError(response);
       const $2 = load(response.data);
       const pages = [];
       const scriptContent = $2("script#single-chapter-js-extra").html();
@@ -15292,6 +15298,7 @@ var _Sources = (() => {
         method: "GET"
       });
       const response = await this.requestManager.schedule(request, 1);
+      this.checkResponseError(response);
       const $2 = load(response.data);
       const title = $2(".manga-titles h1").text().trim();
       const altTitles = $2(".manga-titles h2").text().trim();
@@ -15357,6 +15364,26 @@ var _Sources = (() => {
           hentai: false
         })
       });
+    }
+    async getCloudflareBypassRequestAsync() {
+      return App.createRequest({
+        url: `${DOMAIN}/`,
+        method: "GET",
+        headers: {
+          referer: `${DOMAIN}/`,
+          "user-agent": await this.requestManager.getDefaultUserAgent()
+        }
+      });
+    }
+    // manhwaread.com answers with a 403 Cloudflare challenge page until the
+    // user has passed the challenge in the app's Cloudflare bypass web view.
+    checkResponseError(response) {
+      if (response.status === 403 || response.status === 503) {
+        throw new Error(
+          `CLOUDFLARE BYPASS ERROR:
+Please go to the homepage of <${ManhwaReadInfo.name}> and press the cloud icon.`
+        );
+      }
     }
     getMangaShareUrl(mangaId) {
       return `${DOMAIN}/manhwa/${mangaId}`;
